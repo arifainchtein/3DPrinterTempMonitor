@@ -33,7 +33,9 @@ DallasTemperature tempSensor(&oneWire);
 TM1637Display display1(UI_CLK, UI1_DAT);
 TM1637Display display2(UI_CLK, UI2_DAT);
 volatile bool clockTicked = false;
-Timer sampleTimer(60);
+uint8_t samplingSeconds=30;
+
+Timer sampleTimer(samplingSeconds);
 uint8_t targetTemperature=27;
 float initialTemperature;
 
@@ -114,6 +116,10 @@ void loop() {
 
    if(sampleTimer.status()){
      sampleTimer.reset();
+      for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i] = CRGB(255, 255, 0);
+    }
+    FastLED.show();
      float increaseTemperature = temperature-initialTemperature;
      float durationMinutes = millis()/60000;
      float rateOfIncrease = increaseTemperature/durationMinutes;
